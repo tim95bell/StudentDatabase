@@ -26,9 +26,8 @@ public class SearchStudentScreen {
     
     private Scene scene;
     
-    private GridPane searchScreenPane;
+    private BorderPane searchScreenPane;
     private GridPane multipleResultsScreenPane;
-    private BorderPane resultScreenPane;
     private TextField nameTf;
     private Button searchBtn;
     private Button cancelBtn;
@@ -37,24 +36,28 @@ public class SearchStudentScreen {
     private Button acceptMultipleChoiceBtn;
     private ObservableList<Student> multipleResultsList;
     
+    
     private ObservableList<Student> result;
     
     public SearchStudentScreen(Asg3 owner){
         this.owner = owner;
         this.db = owner.getDb();
+        
+        // search screen
         this.nameTf = new TextField();
         nameTf.setPromptText("Name");
-        this.searchScreenPane = new GridPane();
+        this.searchScreenPane = new BorderPane();
+        
+        // multiple results screen
         this.multipleResultsScreenPane = new GridPane();
-        this.resultScreenPane = new BorderPane();
         this.searchBtn = new Button("Search");
         searchBtn.setOnAction(e->searchBtnPress());
         this.cancelBtn = new Button("Cancel");
         cancelBtn.setOnAction(e->cancelBtnPress());
         this.acceptMultipleChoiceBtn = new Button("Select");
         acceptMultipleChoiceBtn.setOnAction(e->acceptMultipleChoiceBtnPress());
-        
         multipleResCb = new ChoiceBox();
+        
         init();
     }
     
@@ -67,8 +70,14 @@ public class SearchStudentScreen {
         descFPane.setAlignment(javafx.geometry.Pos.CENTER);
         FlowPane searchFPane = new FlowPane();
         searchFPane.getChildren().addAll( new Label("Name: "), nameTf, searchBtn, cancelBtn );
-        searchScreenPane.add(descFPane, 0, 0);
-        searchScreenPane.add(searchFPane, 0, 1);
+        
+        Button searchHomeBtn = new Button("Home");
+        searchHomeBtn.setOnAction(e->cancelBtnPress());
+        GridPane searchGrid = new GridPane();
+        searchGrid.add(descFPane, 0, 0);
+        searchGrid.add(searchFPane, 0, 1);
+        searchScreenPane.setCenter(searchGrid);        
+        searchScreenPane.setTop(searchHomeBtn);
         
         // multiple results screen
         FlowPane multipleResultsTitle = new FlowPane();
@@ -81,29 +90,14 @@ public class SearchStudentScreen {
         multipleResultsList = FXCollections.observableArrayList(  );
         multipleResCb.setItems(multipleResultsList); 
         
-        // result screen
-        FlowPane resultScreenHeader = new FlowPane();
-        Button homeBtn = new Button("Home");
-        homeBtn.setOnAction(e->cancelBtnPress());
-        resultScreenHeader.getChildren().add(homeBtn);
-        resultScreenPane.setTop(resultScreenHeader);
-        result = FXCollections.observableArrayList(  );
-        TableView<Student> resultTable  = new TableView();
-        TableColumn<Student, Integer> idCol = new TableColumn<>("StudentID");
-        idCol.setMinWidth(200);
-        idCol.setCellValueFactory(new PropertyValueFactory<>("id"));
-        TableColumn<Student, String> nameCol = new TableColumn<>("Name");
-        nameCol.setMinWidth(200);
-        nameCol.setCellValueFactory(new PropertyValueFactory<>("name"));
-        resultTable.setItems(result);
-        resultTable.getColumns().addAll(idCol, nameCol);     
-        resultScreenPane.setCenter(resultTable);
+        
         
         this.scene = new Scene(searchScreenPane);
     }
     
     public void searchBtnPress(){
         String name = nameTf.getCharacters().toString();
+        nameTf.clear();
         if(name == null || name.trim().equals("")){
             alert("Name cannot be empty");
             return;
@@ -112,18 +106,16 @@ public class SearchStudentScreen {
         ArrayList<Student> results = db.getStudentFromName(name);
         
         if(results.size() == 0){
-            alert("No students with the name + " + name + ".");
+            alert("No students with the name " + name + ".");
             return;
         }
         else if(results.size() == 1){
-            result.clear();
-            result.add(results.get(0));
-            this.scene.setRoot(resultScreenPane);
+            this.scene.setRoot(searchScreenPane);
+            owner.displayStudent(results.get(0));
         }
         else{
             multipleResultsList.clear();
             multipleResultsList.addAll(results);
-//            multipleResCb.setItems(multipleResultsList);
             this.scene.setRoot(multipleResultsScreenPane);
         }
     }
@@ -138,14 +130,20 @@ public class SearchStudentScreen {
     
     public void cancelBtnPress(){
         this.scene.setRoot(searchScreenPane);
+        nameTf.clear();
         owner.homeBtnPress();
     }
     
     public void acceptMultipleChoiceBtnPress(){
+        if(multipleResCb.getValue() == null){
+            alert("Must select an id");
+            return;
+        }
+        
+        this.scene.setRoot(searchScreenPane);
         Student student = (Student)multipleResCb.getValue();
-        result.clear();
-        result.add(student);
-        this.scene.setRoot(resultScreenPane);
+        owner.displayStudent(student);
+        
     }
     
     public Scene getScene(){

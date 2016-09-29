@@ -73,7 +73,7 @@ public class Database {
             deleteStudentFromMarkStatement = connection.prepareStatement("DELETE FROM Mark WHERE StudentID=?;");
             deleteMarkFromMarkStatement = connection.prepareStatement("DELETE FROM Mark WHERE StudentID=? && Subject=? && Session=?;");
             changeNameStatement = connection.prepareStatement("UPDATE Student SET Name=? WHERE StudentID=?");
-            changeMarkStatement = connection.prepareStatement("UPDATE Mark SET Assignment1=?, Assignment2=?, Assignment3=?, FinalExam=? WHERE StudentID=?");
+            changeMarkStatement = connection.prepareStatement("UPDATE Mark SET Assignment1=?, Assignment2=?, Assignment3=?, FinalExam=? WHERE StudentID=? && Subject=? && Session=?");
             
         }
         catch(SQLException e){
@@ -151,7 +151,7 @@ public class Database {
            
         }
         catch(SQLException e){
-            e.printStackTrace();
+            inserted = false;
         }
         return inserted;
     }
@@ -327,18 +327,21 @@ public class Database {
         }
     }
     
-    public void changeMark(int studentId, int asg1, int asg2, int asg3, int exam){
-        try{
+    public boolean changeMark(int studentId, String subject, int session, int asg1, int asg2, int asg3, int exam){
+        try{//Subject=? && Session=?
             changeMarkStatement.setInt(1, asg1);
             changeMarkStatement.setInt(2, asg2);
             changeMarkStatement.setInt(3, asg3);
             changeMarkStatement.setInt(4, exam);
             changeMarkStatement.setInt(5, studentId);
+            changeMarkStatement.setString(6, subject);
+            changeMarkStatement.setInt(7, session);
             changeMarkStatement.execute();
         }
         catch(SQLException e){
-            e.printStackTrace();
+            return false;
         }
+        return true;
     }
     
     

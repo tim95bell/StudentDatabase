@@ -90,7 +90,7 @@ public class SimpleDisplayScreen {
         this.scene = new Scene(bPane);
     }
     
-    public void calcData(boolean simple){
+    public void calcData(boolean simple, Student specifiedStudent){
         if(simple)
             sPane.setContent(simpleTable);
         else
@@ -98,26 +98,43 @@ public class SimpleDisplayScreen {
         
         oList.clear();
         
-        Student[] students = db.getAllStudents();
-        ArrayList<Mark[]> marksList = new ArrayList<>();
-        for(Student s : students){
-            Mark[] thisStudentsMarks = db.getMarksFromId(s.getId());
-            marksList.add(thisStudentsMarks);
-        }
-        
-        for(int studentIndex = 0; studentIndex < students.length; ++studentIndex){
-            Student student = students[studentIndex];
-            for(int marksIndex = 0; marksIndex < marksList.get(studentIndex).length; ++marksIndex){
-                Mark mark = marksList.get(studentIndex)[marksIndex];
-                ViewRow row = new ViewRow( student.getName(), student.getId(), mark.getAllMarksAsStrings() );
-                oList.add(row);
+        // no student specified, do all students
+        if(specifiedStudent == null){
+            // get students
+            Student[] students = db.getAllStudents();
+            ArrayList<Mark[]> marksList = new ArrayList<>();
+            // get marks
+            for(Student s : students){
+                Mark[] thisStudentsMarks = db.getMarksFromId(s.getId());
+                marksList.add(thisStudentsMarks);
+            }
+            
+            //  add all marks to list, in order of student, which are in order of their ids
+            for(int studentIndex = 0; studentIndex < students.length; ++studentIndex){
+                Student student = students[studentIndex];
+                for(int marksIndex = 0; marksIndex < marksList.get(studentIndex).length; ++marksIndex){
+                    Mark mark = marksList.get(studentIndex)[marksIndex];
+                    ViewRow row = new ViewRow( student.getName(), student.getId(), mark.getAllMarksAsStrings() );
+                    oList.add(row);
+                }
+            
             }
             
         }
+        // student specified, do that student
+        else{
+            Mark[] marks = db.getMarksFromId(specifiedStudent.getId());
+            for(int marksIndex = 0; marksIndex < marks.length; ++marksIndex){
+                Mark mark = marks[marksIndex];
+                ViewRow row = new ViewRow( specifiedStudent.getName(), specifiedStudent.getId(), mark.getAllMarksAsStrings() );
+                oList.add(row);
+            }
+        }
+       
     }
     
-    public Scene getScene(boolean simple){
-        calcData(simple);
+    public Scene getScene(boolean simple, Student student){
+        calcData(simple, student);
         return scene;
     }
 }

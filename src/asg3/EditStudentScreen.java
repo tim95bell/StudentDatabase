@@ -100,7 +100,7 @@ public class EditStudentScreen {
         
         FlowPane topFPane = new FlowPane();
         Button homeBtn = new Button("Home");
-        homeBtn.setOnAction( e->owner.homeBtnPress() );
+        homeBtn.setOnAction( e->homeBtnPress() );
         topFPane.getChildren().add(homeBtn);
         
         FlowPane bottomFPane = new FlowPane();
@@ -153,12 +153,13 @@ public class EditStudentScreen {
     public void addStudent(){
         String name = this.addStudentTf.getCharacters().toString();
         this.addStudentTf.clear();
-        if(name == null || name.length() == 0){
-//            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-//            alert.setTitle("Em");
-//            alert.setHeaderText(null);
-//            alert.setContentText("The file \"" + fileName + "\" could not be found.");
-//            alert.showAndWait();
+        if(name == null || name.trim().equals("")){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("");
+            alert.setHeaderText(null);
+            alert.setContentText("Cannot set empty name");
+            alert.showAndWait();
+            addStudentTf.clear();
             return;
         }
      
@@ -168,12 +169,13 @@ public class EditStudentScreen {
     
     public void acceptChangeBtn(){
         String name = editNameTf.getCharacters().toString();
-        if(name == null || name.length() == 0 || name.trim().equals("")){
+        if(name == null || name.trim().equals("")){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("");
             alert.setHeaderText(null);
             alert.setContentText("Cannot set empty name");
             alert.showAndWait();
+            editNameTf.clear();
         }
         else{
             db.changeName(Integer.parseInt(editIdLabel.getText()), name);
@@ -184,6 +186,11 @@ public class EditStudentScreen {
     
     public void cancelChangeBtn(){
         scene.setRoot(bPane);
+    }
+    
+    public void homeBtnPress(){
+        addStudentTf.clear();
+        owner.homeBtnPress();
     }
 
     

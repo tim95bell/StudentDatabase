@@ -32,6 +32,8 @@ public class EditMarkScreen {
     // edit
     private FlowPane editPane;
     private Label editIdLabel;
+    private Label editSubjectLabel;
+    private Label editSessionLabel;
     private TextField editAsg1Tf;
     private TextField editAsg2Tf;
     private TextField editAsg3Tf;
@@ -60,11 +62,13 @@ public class EditMarkScreen {
         
         this.editPane = new FlowPane();
         this.editIdLabel = new Label();
+        this.editSubjectLabel = new Label();
+        this.editSessionLabel = new Label();
         this.editAsg1Tf = new TextField();
         this.editAsg2Tf = new TextField();
         this.editAsg3Tf = new TextField();
         this.editExamTf = new TextField();
-        int editTfWidth = 100;
+        int editTfWidth = 80;
         editAsg1Tf.setMaxWidth(editTfWidth);
         editAsg2Tf.setMaxWidth(editTfWidth);
         editAsg3Tf.setMaxWidth(editTfWidth);
@@ -75,6 +79,10 @@ public class EditMarkScreen {
         cancelChangeBtn.setOnAction(e->cancelChangeBtn());
         HBox id = new HBox();
         id.getChildren().addAll( new Label("Student Id: "), editIdLabel );
+        HBox subject = new HBox();
+        subject.getChildren().addAll( new Label("Subject: "), editSubjectLabel );
+        HBox session = new HBox();
+        session.getChildren().addAll( new Label("Session: "), editSessionLabel );
         HBox asg1 = new HBox();
         asg1.getChildren().addAll(new Label("Assignment 1: "), editAsg1Tf);
         HBox asg2 = new HBox();
@@ -83,7 +91,7 @@ public class EditMarkScreen {
         asg3.getChildren().addAll(new Label("Assignment 3: "), editAsg3Tf);
         HBox exam = new HBox();
         exam.getChildren().addAll(new Label("Exam: "), editExamTf);
-        editPane.getChildren().addAll( id, asg1, asg2, asg3, exam, acceptChangeBtn, cancelChangeBtn);
+        editPane.getChildren().addAll( id, subject, session, asg1, asg2, asg3, exam, acceptChangeBtn, cancelChangeBtn);
         editPane.setAlignment(javafx.geometry.Pos.CENTER);
         editPane.setHgap(20);
         
@@ -143,7 +151,7 @@ public class EditMarkScreen {
         
         FlowPane topFPane = new FlowPane();
         Button homeBtn = new Button("Home");
-        homeBtn.setOnAction( e->owner.homeBtnPress() );
+        homeBtn.setOnAction( e->homeBtnPress() );
         topFPane.getChildren().add(homeBtn);
         
         FlowPane bottomFPaneTitle = new FlowPane();
@@ -213,41 +221,112 @@ public class EditMarkScreen {
     }
     
     public void addMark(){
+        if(idCb.getValue() == null){
+            alert("Select a Student Id");
+            return;
+        }
+            
+             
+        int session, asg1, asg2, asg3, exam;
+        
+        // get id
         int id = idCb.getValue();
+        // get subject
         String subject = subjectTf.getCharacters().toString();
-        int session = Integer.parseInt( sessionTf.getCharacters().toString() );
+        if(subject.trim().isEmpty()){
+            alert("Subject input cannot be empty");
+            subjectTf.clear();
+            return;
+        }
         
-        int asg1, asg2, asg3, exam;
+        // get session and mark values and check they are valid
+        try{
+            if( sessionTf.getCharacters().toString().trim().isEmpty() ){
+                alert("Session input cannot be empty");
+                sessionTf.clear();
+                return;
+            }
+            else{
+                session = Integer.parseInt( sessionTf.getCharacters().toString() );
+            }
+            
+            if( asg1Tf.getCharacters().toString().trim().isEmpty() ){
+                alert("Assignment 1 input cannot be empty");
+                asg1Tf.clear();
+                return;
+            }
+            else{
+                asg1 = Integer.parseInt( asg1Tf.getCharacters().toString() );
+                if(asg1 < 0 || asg1 > 100){
+                    alert("Assignment 1 input must be between 0 and 100 inclusive");
+                    return;
+                }
+            }
+            if( asg2Tf.getCharacters().toString().trim().isEmpty() ){
+                alert("Assignment 2 input cannot be empty");
+                asg2Tf.clear();
+                return;
+            }
+            else{
+                asg2 = Integer.parseInt( asg2Tf.getCharacters().toString() );
+                if(asg2 < 0 || asg2 > 100){
+                    alert("Assignment 2 input must be between 0 and 100 inclusive");
+                    return;
+                }
+            }
+            if( asg3Tf.getCharacters().toString().trim().isEmpty() ){
+                alert("Assignment 3 input cannot be empty");
+                asg3Tf.clear();
+                return;
+            }
+            else{
+                asg3 = Integer.parseInt( asg3Tf.getCharacters().toString() );
+                if(asg3 < 0 || asg3 > 100){
+                    alert("Assignment 3 input must be between 0 and 100 inclusive");
+                    return;
+                }
+            }
+            if( examTf.getCharacters().toString().trim().isEmpty() ){
+                alert("Exam input cannot be empty");
+                examTf.clear();
+                return;
+            }
+            else{
+                exam = Integer.parseInt( examTf.getCharacters().toString() );
+                if(exam < 0 || asg1 > exam){
+                    alert("Exam input must be between 0 and 100 inclusive");
+                    return;
+                }
+            }
+        }
+        catch(NumberFormatException e){
+            alert("Only numbers are aloud for the following inputs: Session, Assignment 1, Assignment 2, Assignment 3, Exam");
+            return;
+        }
         
-        if( asg1Tf.getCharacters().toString().length() == 0)
-            asg1 = 0;
-        else
-            asg1 = Integer.parseInt( asg1Tf.getCharacters().toString() );
-        
-        if( asg2Tf.getCharacters().toString().length() == 0)
-            asg2 = 0;
-        else
-            asg2 = Integer.parseInt( asg2Tf.getCharacters().toString() );
-        
-        if( asg3Tf.getCharacters().toString().length() == 0)
-            asg3 = 0;
-        else
-            asg3 = Integer.parseInt( asg3Tf.getCharacters().toString() );
-        
-        if( examTf.getCharacters().toString().length() == 0)
-            exam = 0;
-        else
-            exam = Integer.parseInt( examTf.getCharacters().toString() );
-        
-        // check subject valid ??
-        // check  marks are valid.    Prevent error converting chars to an int
+        //TODO : check combo of id + subject + session, is new/unique
+
         
         // create mark
         Mark mark = new Mark(id, subject, session, asg1, asg2, asg3, exam);
         // add mark to list
         oList.add(new EditMark(this, mark));
         // add mark to db
-        db.insertMark(mark);
+        boolean inserted = db.insertMark(mark);
+        
+        if(!inserted){
+            alert("Error: Combinatino of (StudentID + Subject + Session) must be unique/new");
+            return;
+        }
+        
+        // reset inputs
+        idCb.setValue(null);
+        subjectTf.clear();
+        sessionTf.clear();
+        asg1Tf.clear();
+        asg2Tf.clear();
+        asg3Tf.clear();
+        examTf.clear();
     }
     
     public void deleteMark(EditMark editMark){
@@ -257,6 +336,8 @@ public class EditMarkScreen {
     
     public void editMark(EditMark editMark){
         editIdLabel.setText(Integer.toString(editMark.getStudentId()));
+        editSubjectLabel.setText(editMark.getSubject());
+        editSessionLabel.setText(Integer.toString(editMark.getSession()));
         editAsg1Tf.setText( Integer.toString(editMark.getAsg1()) );
         editAsg2Tf.setText( Integer.toString(editMark.getAsg2()) );
         editAsg3Tf.setText( Integer.toString(editMark.getAsg3()) );
@@ -344,7 +425,7 @@ public class EditMarkScreen {
             return;
         }  
         
-        db.changeMark(Integer.parseInt(editIdLabel.getText()), asg1, asg2, asg3, exam);
+        db.changeMark(Integer.parseInt(editIdLabel.getText()), editSubjectLabel.getText(), Integer.parseInt(editSessionLabel.getText()), asg1, asg2, asg3, exam);
         calcData();
         scene.setRoot(bPane);   
     }
@@ -359,6 +440,18 @@ public class EditMarkScreen {
     
     public void cancelChangeBtn(){
         scene.setRoot(bPane);
+    }
+    
+    public void homeBtnPress(){
+        // reset inputs
+        idCb.setValue(null);
+        subjectTf.clear();
+        sessionTf.clear();
+        asg1Tf.clear();
+        asg2Tf.clear();
+        asg3Tf.clear();
+        examTf.clear();
+        owner.homeBtnPress();
     }
     
 }

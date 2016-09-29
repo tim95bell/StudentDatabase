@@ -94,6 +94,9 @@ public class Asg3 extends Application {
         return new Scene(new BorderPane());
     }
    
+    public void displayStudent(Student student){
+        stage.setScene( simpleDisplayScreen.getScene(true, student) );
+    }
     
     //--------------------- BUTTON PRESS ACTIONS ---------------------//
     
@@ -102,11 +105,11 @@ public class Asg3 extends Application {
     }
     
     public void simpleDisplayBtnPress(){
-        stage.setScene(simpleDisplayScreen.getScene(true));
+        stage.setScene( simpleDisplayScreen.getScene(true, null) );
     }
     
     public void scoreDisplayBtnPress(){
-        stage.setScene(simpleDisplayScreen.getScene(false));
+        stage.setScene( simpleDisplayScreen.getScene(false, null) );
     }
     
     public void searchStudentBtnPress(){
