@@ -6,7 +6,7 @@
 package asg3;
 
 /**
- *
+ * Holds the data for a row in the SimpleDisplayScreen table.
  * @author timbell
  */
 public class ViewRow {

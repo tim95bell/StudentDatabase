@@ -25,9 +25,12 @@ public class Database {
     
     private int nextId = 1001;
     
-
+    /**
+     * Init Database. Creates Database and tables if they dont exist.
+     * Sets max id to the max value + 1 if there is one, otherwise leaves it as 1001
+     * Creates prepared statements.
+     */
     public void initDatabase(){
-//         TODO: do i need to do something to say that both tables share studentID ?
         String createDatabase ="CREATE DATABASE IF NOT EXISTS assignment3;";
         String useDatabase = "USE assignment3;";
         String createStudentTable = "CREATE TABLE IF NOT EXISTS Student( " +
@@ -81,6 +84,10 @@ public class Database {
         }
     }
     
+    /**
+     * Prints all students
+     * 
+     */
     public void printStudents(){
         try{
             ResultSet resultSet = statement.executeQuery("Select StudentID, Name FROM Student");
@@ -93,6 +100,9 @@ public class Database {
         }
     }
     
+    /**
+     * Prints all marks.
+     */
     public void printMarks(){
         try{
             ResultSet resultSet = statement.executeQuery("Select StudentID, Subject, Session, Assignment1, Assignment2, Assignment3, FinalExam FROM Mark");
@@ -105,6 +115,11 @@ public class Database {
         }
     }
     
+    /**
+     * Inserts a student with the given name, as long as the name isnt null. Also generates the id.
+     * @param name the name to give the new student.
+     * @return the student that was added, or null if the name was invalid and no student was added.
+     */
     public Student insertStudent(String name){
         if( name == null || name.length() == 0 )
             return null;
@@ -121,7 +136,11 @@ public class Database {
         return new Student(id, name);
     }
     
-    // take a mark object ?
+    /**
+     * Inserts the provided mark, as long as the mark is legal.
+     * @param mark the mark to insert
+     * @return true if the insert was successful, false otherwise.
+     */
     public boolean insertMark(Mark mark){
         // student exist
         if( !studentIdExists(mark.getStudentId()) )
@@ -147,7 +166,6 @@ public class Database {
             insertMarkStatement.setInt(7, mark.getExam());
             insertMarkStatement.execute();
             inserted = true;
-            // TODO: are we supposed to add these results now, or add without them and then they are modified later?
            
         }
         catch(SQLException e){
@@ -156,12 +174,22 @@ public class Database {
         return inserted;
     }
     
+    /**
+     * Checks if the given student id exists in the Student table.
+     * @param studentId
+     * @return true if the student exists, false otherwise
+     */
     public boolean studentIdExists(int studentId){
         return getNameFromId(studentId) != null;
     }
     
     // returns assosiated name, 
     // or null if no such student id exists
+    /**
+     * Gets the name associated with the given student id, as long as that id exists.
+     * @param studentId the student id to search for.
+     * @return the name of the student with the given id, or null if no such student exists.
+     */
     public String getNameFromId(int studentId){
         String name = null;
         try{
@@ -176,9 +204,11 @@ public class Database {
         return name;
     }
     
-     //returns assosiated ids 
-    //Could be multiple names,
-     //and therefore arraylist of ids returned, which will be empty if there are none
+    /**
+     * Gets the students associated with the given name.
+     * @param studentName the name to search for.
+     * @return an ArrayList of the students found, could be empty.
+     */
     public ArrayList<Student> getStudentFromName(String studentName){
         ArrayList<Student> students = new ArrayList<>();
         
@@ -195,18 +225,15 @@ public class Database {
         return students;
     }
     
-    // returns an arraylist of Marks
-    // the list will be empty if the studentId specified does not exist or is not in any subjects
+    /**
+     * gets all marks for the given student id.
+     * @param studentId the id to search for.
+     * @return an array of all marks found, could be size 0.
+     */
     public Mark[] getMarksFromId(int studentId){
-        // check id exists
-//        if( getNameFromId(studentId) == null )
-//            return null;
-
-       
         Mark[] marks = null;
         Mark mark;
         //retrieve marks
-
         try{
             getMarkFromIdStatement.setInt(1, studentId);
             ResultSet resultSet = getMarkFromIdStatement.executeQuery();
@@ -240,6 +267,10 @@ public class Database {
     
     // returns an int array containing all StudentIds
     // returns null if there are none
+    /**
+     * Gets all ids.
+     * @return an int array of all ids, could be size 0.
+     */
     public int[] getAllIds(){
         // get ids
         int[] ids = null;
@@ -267,6 +298,10 @@ public class Database {
         return ids;
     }
     
+    /**
+     * Gets all students.
+     * @return an array of all students, could be size 0.
+     */
     public Student[] getAllStudents(){
         Student[] students = null;
         
@@ -292,6 +327,10 @@ public class Database {
     
     // update methods
     
+    /**
+     * deletes the student with the given student it, assuming they exist.
+     * @param studentId the id to delete.
+     */
     public void deleteStudent(int studentId){
         try{
             deleteStudentStatement.setInt(1, studentId);
@@ -304,6 +343,10 @@ public class Database {
         }
     }
     
+    /**
+     * deletes the given mark, assuming it exists
+     * @param editMark the mark to delete.
+     */
     public void deleteMark(EditMark editMark){
         try{
             deleteMarkFromMarkStatement.setInt(1, editMark.getStudentId());
@@ -316,6 +359,11 @@ public class Database {
         }
     }
     
+    /**
+     * Changes the name of the student with the student id given, to the name given.
+     * @param studentId the id of the student to change.
+     * @param name the name to change to.
+     */
     public void changeName(int studentId, String name){
         try{
             changeNameStatement.setString(1, name);
@@ -327,6 +375,17 @@ public class Database {
         }
     }
     
+    /**
+     * Changes the mark values of the given mark.
+     * @param studentId the student id of the mark to change.
+     * @param subject the subject of the mark to change.
+     * @param session the session of the mark to change.
+     * @param asg1 the value to change Assignment1 to.
+      * @param asg2 the value to change Assignment2 to.
+      * @param asg3 the value to change Assignment3 to.
+      * @param exam the value to change FinalExam to.
+      * @return true if the change was successful, false otherwise.
+     */
     public boolean changeMark(int studentId, String subject, int session, int asg1, int asg2, int asg3, int exam){
         try{//Subject=? && Session=?
             changeMarkStatement.setInt(1, asg1);

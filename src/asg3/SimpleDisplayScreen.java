@@ -13,6 +13,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 
+/**
+ * A  screen that displays marks.
+ * @author timbell
+ */
 public class SimpleDisplayScreen {
     
     private Asg3 owner;
@@ -90,6 +94,11 @@ public class SimpleDisplayScreen {
         this.scene = new Scene(bPane);
     }
     
+    /**
+     * Calculates the data and fills the table.
+     * @param simple if true a simple display will be used, otherwise the score display will be used.
+     * @param specifiedStudent if null, all students will be displayed, otherwise the given student will only be displayed.
+     */
     public void calcData(boolean simple, Student specifiedStudent){
         if(simple)
             sPane.setContent(simpleTable);
@@ -133,6 +142,12 @@ public class SimpleDisplayScreen {
        
     }
     
+    /**
+     * Gets the scene.
+     * @param simple specifies to use a simple or score view.
+     * @param student specifies the student to display, or all if null.
+     * @return the scene.
+     */
     public Scene getScene(boolean simple, Student student){
         calcData(simple, student);
         return scene;

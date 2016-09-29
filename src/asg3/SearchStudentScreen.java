@@ -9,16 +9,18 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.ChoiceBox;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Alert;
-import javafx.scene.control.cell.PropertyValueFactory;
 import java.util.ArrayList;
 import javafx.scene.Scene;
 
-
+/**
+ * A Screen to search for a student. Contains two scenes, one for the search,
+ * and another to choose an option if there are multiple results. 
+ * Then it changes screens to the SimpleDisplayScreen, specifying to only display the specified student.
+ * @author timbell
+ */
 public class SearchStudentScreen {
     
     private Asg3 owner;
@@ -35,9 +37,6 @@ public class SearchStudentScreen {
     private ChoiceBox multipleResCb;
     private Button acceptMultipleChoiceBtn;
     private ObservableList<Student> multipleResultsList;
-    
-    
-    private ObservableList<Student> result;
     
     public SearchStudentScreen(Asg3 owner){
         this.owner = owner;
@@ -90,11 +89,13 @@ public class SearchStudentScreen {
         multipleResultsList = FXCollections.observableArrayList(  );
         multipleResCb.setItems(multipleResultsList); 
         
-        
-        
         this.scene = new Scene(searchScreenPane);
     }
     
+    /**
+     * Performs the search. Changing the scene to the multiple options scene if multiple options are found.
+     * Or changing to the SimpleDisplayScreen and displaying the student found, if one single student is found.
+     */
     public void searchBtnPress(){
         String name = nameTf.getCharacters().toString();
         nameTf.clear();
@@ -134,6 +135,9 @@ public class SearchStudentScreen {
         owner.homeBtnPress();
     }
     
+    /**
+     * accepts the choice from the multipleResCb in the multiple options scene.
+     */
     public void acceptMultipleChoiceBtnPress(){
         if(multipleResCb.getValue() == null){
             alert("Must select an id");
@@ -143,7 +147,6 @@ public class SearchStudentScreen {
         this.scene.setRoot(searchScreenPane);
         Student student = (Student)multipleResCb.getValue();
         owner.displayStudent(student);
-        
     }
     
     public Scene getScene(){

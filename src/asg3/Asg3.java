@@ -5,21 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.stage.Stage;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import javafx.scene.text.Text;
-import javafx.scene.text.Font;
-import javafx.scene.control.ScrollPane;
-import javafx.geometry.Insets;
-import javafx.collections.ObservableList;
-import javafx.collections.FXCollections;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.cell.PropertyValueFactory;
-
-import java.util.ArrayList;
-import javafx.geometry.Pos;
 
 public class Asg3 extends Application {
    
@@ -27,17 +13,21 @@ public class Asg3 extends Application {
     public static final int HEIGHT = 720;
     
     private Stage stage;
+    // the scene for the main menu
     private Scene menuScene;
-    
+    // the other screens, these will provide a scene
     private EditMarkScreen editMarkScreen;
     private SimpleDisplayScreen simpleDisplayScreen;
     private EditStudentScreen editStudentScreen;
     private SearchStudentScreen searchStudentScreen;
     
     private Database db;
-   
     
     @Override
+    /**
+     * Init everything, and show menu scene
+     * @param stage the provided stage
+     */
     public void start(Stage stage) {
         db = new Database();
         db.initDatabase();
@@ -46,8 +36,6 @@ public class Asg3 extends Application {
         stage.setTitle("Student Marks");
         stage.setWidth(WIDTH);
 	stage.setHeight(HEIGHT);
-        
-        
         
         this.menuScene = createMenuScene();
         
@@ -61,6 +49,10 @@ public class Asg3 extends Application {
     }
     
     //--------------------- INIT SCREENS ---------------------//
+    /**
+     * Creates the menuScene
+     * 
+     */
     public Scene createMenuScene(){
         int numBtns = 5;
         Button simpleDisplayBtn = new Button("Simple Display");
@@ -78,6 +70,7 @@ public class Asg3 extends Application {
         Button insertMarkBtn = new Button("Edit Marks");
         insertMarkBtn.setOnAction(e->insertMarkBtnPress());
 
+        // menu scene
         BorderPane bPane = new BorderPane();
         double btnHeight = insertMarkBtn.getHeight();
         double vGap = (stage.getHeight() - (btnHeight*numBtns)) / (numBtns*2);
@@ -89,11 +82,11 @@ public class Asg3 extends Application {
         
         return new Scene(bPane);
     }
-    
-    public Scene createScoreDisplayScene(){
-        return new Scene(new BorderPane());
-    }
    
+    /**
+     * Displays the student provided, in a simple view
+     *  @param student the student to display
+     */
     public void displayStudent(Student student){
         stage.setScene( simpleDisplayScreen.getScene(true, student) );
     }

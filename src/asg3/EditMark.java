@@ -2,6 +2,9 @@ package asg3;
 
 import javafx.scene.control.Button;
 
+/**
+ * Holds the information for a row of data in the EditMarkScreen table.
+ */
 public class EditMark {
     private EditMarkScreen owner;
     private Mark mark;

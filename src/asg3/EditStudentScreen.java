@@ -118,12 +118,12 @@ public class EditStudentScreen {
         bPane.setTop(topFPane);
         bPane.setBottom(bottomFPane);
         
-        // EDIT STUD
-        
-        
         this.scene = new Scene(bPane);
     }
     
+    /**
+     * Calculates and sets the data in the table.
+     */
     public void calcData(){
         // get data
         oList.clear();
@@ -144,12 +144,19 @@ public class EditStudentScreen {
         oList.remove(editStudent);
     }
     
+    /**
+     * Changes the scene to the edit student scene. Allowing the student to be edited.
+     * @param editStudent the student to edit.
+     */
     public void editStudent(EditStudent editStudent){
        editIdLabel.setText(Integer.toString(editStudent.getId()));
        editNameTf.setText(editStudent.getName());
        scene.setRoot(editPane);
     }
     
+    /**
+     * adds the student using the data from the input fields.
+     */
     public void addStudent(){
         String name = this.addStudentTf.getCharacters().toString();
         this.addStudentTf.clear();
@@ -167,6 +174,9 @@ public class EditStudentScreen {
         oList.add(new EditStudent(this, student));
     }
     
+    /**
+     * Accepts the change specified in the edit student scene.
+     */
     public void acceptChangeBtn(){
         String name = editNameTf.getCharacters().toString();
         if(name == null || name.trim().equals("")){
@@ -188,6 +198,9 @@ public class EditStudentScreen {
         scene.setRoot(bPane);
     }
     
+    /**
+     * Sets the scene back to the menu scene.
+     */
     public void homeBtnPress(){
         addStudentTf.clear();
         owner.homeBtnPress();

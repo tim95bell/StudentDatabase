@@ -2,6 +2,10 @@ package asg3;
 
 import javafx.scene.control.Button;
 
+/**
+ * Holds the data for a row of data in the table in the edit student screen.
+ * @author timbell
+ */
 public class EditStudent {
     private EditStudentScreen owner;
     private Student student;

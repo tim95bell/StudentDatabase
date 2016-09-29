@@ -1,6 +1,9 @@
 package asg3;
 
-
+/**
+ * Holds the data for a student.
+ * @author timbell
+ */
 public class Student {
     private int id;
     private String name;

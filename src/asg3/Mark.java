@@ -6,10 +6,10 @@
 package asg3;
 
 /**
- *
+ * Holds the data for a mark.
  * @author timbell
  */
-//the subjectId, 3 assignments, and 1 exam
+
 public class Mark {
     private int studentId;
     private String subject;

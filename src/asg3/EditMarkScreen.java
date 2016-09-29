@@ -20,14 +20,15 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Font;
 
 public class EditMarkScreen {
+    private Asg3 owner;
+    private Database db;
     
+    // view
     private BorderPane bPane;
     private TableView table;
     private ScrollPane sPane;
     private Scene scene;
     private ObservableList<EditMark> oList;
-    private Asg3 owner;
-    private Database db;
     
     // edit
     private FlowPane editPane;
@@ -41,7 +42,6 @@ public class EditMarkScreen {
     private Button acceptChangeBtn;
     private Button cancelChangeBtn;
     
-    // TODO: a id drop selection
     private TextField subjectTf, sessionTf, asg1Tf, asg2Tf, asg3Tf, examTf;
     private ChoiceBox<Integer> idCb;
     
@@ -165,26 +165,21 @@ public class EditMarkScreen {
         double addButtonWidth = new Button("Add").getWidth();
         double padding = 10;
         double tfWidth = (Asg3.WIDTH - (idLabel.getWidth() + addButtonWidth + idCb.getWidth() + padding*6)) / 8;
-//        subjectTf, sessionTf, asg1Tf, asg2Tf, asg3Tf, examTf;
         subjectTf = new TextField();
         subjectTf.setPromptText("Subject");
         subjectTf.setMaxWidth(tfWidth);
-//        Label subjectLabel = new Label("Subject: ");
         subjectTf.setOnAction( e->addMark() );
         sessionTf = new TextField();
         sessionTf.setPromptText("Session");
         sessionTf.setMaxWidth(tfWidth);
-//        Label sessionLabel = new Label("Session: ");
         sessionTf.setOnAction( e->addMark() );
         asg1Tf = new TextField();
         asg1Tf.setPromptText("Asg 1");
         asg1Tf.setMaxWidth(tfWidth);
-//        Label asg1Label = new Label("Asg 1: ");
         asg1Tf.setOnAction( e->addMark() );
         asg2Tf = new TextField();
         asg2Tf.setPromptText("Asg 2");
         asg2Tf.setMaxWidth(tfWidth);
-//        Label asg2Label = new Label
         asg2Tf.setOnAction( e->addMark() );
         asg3Tf = new TextField();
         asg3Tf.setPromptText("Asg 3");
@@ -220,13 +215,15 @@ public class EditMarkScreen {
         this.scene = new Scene(bPane);
     }
     
+    /**
+     * Adds a mark with the properties specified by the inputs.
+     */
     public void addMark(){
         if(idCb.getValue() == null){
             alert("Select a Student Id");
             return;
         }
-            
-             
+                   
         int session, asg1, asg2, asg3, exam;
         
         // get id
@@ -304,9 +301,6 @@ public class EditMarkScreen {
             return;
         }
         
-        //TODO : check combo of id + subject + session, is new/unique
-
-        
         // create mark
         Mark mark = new Mark(id, subject, session, asg1, asg2, asg3, exam);
         // add mark to list
@@ -334,6 +328,10 @@ public class EditMarkScreen {
         oList.remove(editMark);
     }
     
+    /**
+     * Changes the scene to the edit mark scene.
+     * @param editMark the mark to be edited.
+     */
     public void editMark(EditMark editMark){
         editIdLabel.setText(Integer.toString(editMark.getStudentId()));
         editSubjectLabel.setText(editMark.getSubject());
@@ -345,6 +343,9 @@ public class EditMarkScreen {
         scene.setRoot(editPane);
     }
     
+    /**
+     * Fills the table with the mark data.
+     */
     public void calcData(){
         oList.clear();
         this.idCb.getItems().clear();
@@ -365,8 +366,6 @@ public class EditMarkScreen {
             }
         }
         
-        
-        
         for(Student s : students)
             this.idCb.getItems().add(s.getId());
     }
@@ -376,6 +375,9 @@ public class EditMarkScreen {
         return scene;
     }
     
+    /**
+     * Accepts the change specified in the change mark scene.
+     */
     public void acceptChangeBtn(){
         String studentId = editIdLabel.getText();
         String asg1String = editAsg1Tf.getCharacters().toString();
@@ -442,6 +444,9 @@ public class EditMarkScreen {
         scene.setRoot(bPane);
     }
     
+    /**
+     * Sets the scene back to the menu scene.
+     */
     public void homeBtnPress(){
         // reset inputs
         idCb.setValue(null);
